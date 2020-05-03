@@ -1,5 +1,5 @@
 # ML5-Blazor
- [![NuGet Package](https://img.shields.io/badge/nuget-v1.0.1%20Preview%204-orange.svg)](https://www.nuget.org/packages/BlazorML5/)
+ [![NuGet Package](https://img.shields.io/badge/nuget-v1.0.2%20Preview%204-orange.svg)](https://www.nuget.org/packages/BlazorML5/)
 
  
  ### An experimental illustration API to use ML5 from Blazor.
@@ -14,12 +14,12 @@
 1. [Core ML5 Sample](https://blazor-ml5-sample.netlify.com/) 
 
 ## Code Sample
-1. [Source Code](https://github.com/sps014/BlazorML5/tree/master/DemoApplication) 
+1. [Source Code](https://github.com/sps014/BlazorML5/tree/master/SampleApplication) 
 
 ## Installation
 
 ```Nuget
-Install-Package BlazorML5 -Version 1.0.0
+Install-Package BlazorML5 -Version 1.0.2
 ```
 
 ### Usage
@@ -35,10 +35,12 @@ in your index.html in client app or index.cshtml in server
 import this library in head section 
 
 ```
+    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
     <script src="_content/BlazorML5/BlazorML5Core.js"></script>
 ```
 or you can do manual import if you need.
 ```
+    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
     <script src="_content/BlazorML5/ml5ImageClassifier.js"></script>
     <script src="_content/BlazorML5/ml5NeuralNetwork.js"></script>
 ```
