@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject IJSRuntime Runtime
 
     <h2 style="font-weight:bold">Introduction </h2>
 <p>
@@ -28,3 +29,29 @@
     Visit <a href="https://learn.ml5js.org/docs/#/reference/index">here</a>
     for ML5 official Documentation.
 </p>
+<img src="https://raw.githubusercontent.com/ml5js/ml5-examples/development/javascript/ObjectDetector/YOLO_single_image/images/cat.JPG"
+     crossorigin="anonymous" @ref="refer" />
+
+@code
+{
+    ML5.ObjectDetector ObjectDetector;
+
+    ElementReference refer { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        ObjectDetector = new ML5.ObjectDetector(Runtime, ML5.ObjectDetectorModel.YOLO);
+        ObjectDetector.OnModelLoad += Load;
+        return base.OnInitializedAsync();
+    }
+    void Load()
+    {
+        Console.WriteLine("Loaded Successfully");
+        ObjectDetector.OnDetection += Det;
+        ObjectDetector.Detect(refer);
+    }
+    void Det(string err,ML5.ObjectResult[] res)
+    {
+        Console.WriteLine(res[0].label);
+    }
+}
