@@ -107,8 +107,6 @@ function getOptimizer(num)
 
 
 
-
-
 function ml5ModelLoaded()
 {
     this.invokeMethodAsync("NNCBML", "__ModelLoaded__");
@@ -119,7 +117,11 @@ function destroyNNML5(hash)
 }
 function addDataML5(hash, xs, ys)
 {
-    NeuralNetworks[hash].addData(xs, ys);
+    if (ml5.version > "0.4.3")
+        NeuralNetworks[hash].addData([xs], [ys]);
+    else
+        NeuralNetworks[hash].addData(xs, ys);
+
 }
 function normalizeDataML5(hash)
 {
@@ -154,18 +156,35 @@ function ml5DoneTraining()
 }
 function predictML5(hash,dotnet,inputs)
 {
-    NeuralNetworks[hash].predict(inputs, ml5Predict.bind(dotnet));
+    if (ml5.version > "0.4.3")
+        NeuralNetworks[hash].predict([inputs], ml5Predict.bind(dotnet));
+    else
+        NeuralNetworks[hash].predict(inputs, ml5Predict.bind(dotnet));
 }
 function ml5Predict(err, result)
 {
+    if (err != null) {
+        console.error(err);
+        return;
+    }
     this.invokeMethodAsync("NNCBPD", err, result);
 }
 function classifyML5(hash, dotnet, inputs)
 {
-    NeuralNetworks[hash].classify(inputs, ml5classify.bind(dotnet));
+    if (ml5.version > "0.4.3")
+        NeuralNetworks[hash].classify([inputs], ml5classify.bind(dotnet));
+    else
+        NeuralNetworks[hash].classify(inputs, ml5classify.bind(dotnet));
+
 }
 function ml5classify(err, result)
 {
+    console.log(result);
+
+    if (err != null) {
+        console.error(err);
+        return;
+    }
     this.invokeMethodAsync("NNCBCF", err, result);
 }
 

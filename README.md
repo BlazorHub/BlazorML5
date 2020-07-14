@@ -1,17 +1,28 @@
 # ML5-Blazor
- [![NuGet Package](https://img.shields.io/badge/nuget-v1.0.2%20Preview%204-orange.svg)](https://www.nuget.org/packages/BlazorML5/)
+ [![NuGet Package](https://img.shields.io/badge/nuget-v1.0.4%20Preview%204-orange.svg)](https://www.nuget.org/packages/BlazorML5/)
 
  
- ### An experimental illustration API to use ML5 from Blazor.
+ ### An experimental API to use ML5 from Blazor.
 
 ## Features
 1. Neural Network 
 2. Image Classification
 3. Sound Classifier
-4. WebCam Helper
+4. Object Detector (YOLO and COCOSSD based)
+5. WebCam Helper
+
+## Todo
+1. Add support of Posenet
+2. Improved support of ml5 version 0.5.0
+3. Tutorial+Dedicated Demo pages
+4. Test on Blazor Server
 
 ## Demo
 1. [Core ML5 Sample](https://blazor-ml5-sample.netlify.com/) 
+
+### Youtube Tutorial
+1. [Playlist](https://www.youtube.com/watch?v=YWPRXuyYSx4&list=PL8z8Ue600vf1bVvX1uNHNs5GNC4XrSlVk) 
+
 
 ## Code Sample
 1. [Source Code](https://github.com/sps014/BlazorML5/tree/master/SampleApplication) 
@@ -19,7 +30,7 @@
 ## Installation
 
 ```Nuget
-Install-Package BlazorML5 -Version 1.0.2
+Install-Package BlazorML5 -Version 1.0.3
 ```
 
 ### Usage
@@ -34,15 +45,18 @@ in your index.html in client app or index.cshtml in server
 
 import this library in head section 
 
+import ml5
+```html
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 ```
-    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
-    <script src="_content/BlazorML5/BlazorML5Core.js"></script>
+
+recommended way to import ports
 ```
-or you can do manual import if you need.
-```
-    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
+    <script src="_content/BlazorML5/WebCam.js"></script>
     <script src="_content/BlazorML5/ml5ImageClassifier.js"></script>
     <script src="_content/BlazorML5/ml5NeuralNetwork.js"></script>
+    <script src="_content/BlazorML5/ml5SoundClassifier.js"></script>
+    <script src="_content/BlazorML5/ml5ObjectDetector.js"></script>
 ```
 
 
@@ -182,4 +196,52 @@ Adding Data
         var label = result[0].label;
     }
 
+```
+
+#### Object Detector
+
+razor code
+
+```html
+
+@if (Object != null)
+{
+    <h3>@Object.label</h3>
+    <p>Bonding Box</p>
+    <p>x=@Object.x</p>
+    <p>y=@Object.y</p>
+    <p>width=@Object.width</p>
+    <p>height=@Object.height</p>
+}
+<img src="https://raw.githubusercontent.com/ml5js/ml5-examples/development/javascript/ObjectDetector/COCOSSD_single_image/images/cat2.JPG"
+     crossorigin="anonymous" @ref="refer" />
+
+```
+
+now main c# code 
+```cs
+ ML5.ObjectDetector ObjectDetector;
+
+    ElementReference refer { get; set; }
+
+    ML5.ObjectResult Object { get; set; } 
+
+    protected override Task OnInitializedAsync()
+    {
+        ObjectDetector = new ML5.ObjectDetector(Runtime, ML5.ObjectDetectorModel.YOLO);
+        ObjectDetector.OnModelLoad += Load;
+        return base.OnInitializedAsync();
+    }
+    void Load()
+    {
+        Console.WriteLine("Loaded Successfully");
+        ObjectDetector.OnDetection += Det;
+        ObjectDetector.Detect(refer);
+    }
+    async void Det(string err, ML5.ObjectResult[] res)
+    {
+        Object = res[0];
+        StateHasChanged();
+        Console.WriteLine(res[0].label);
+    }
 ```
